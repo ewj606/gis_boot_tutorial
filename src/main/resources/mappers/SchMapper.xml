@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lx.mapapp.repo.SchMapper">
+	<select id="getAttData" resultType="HashMap">
+		SELECT * FROM busan_att_euckr
+	</select>
+	
+	
+	<select id="getNearstMetro" resultType="HashMap" parameterType="Map">
+		SELECT 
+			BA.NAME					AS NAME
+			, BA.LAT				AS LAT
+			, BA.LNG				AS LNG
+			, BL.ST_NM				AS ST_NAME
+			, BL.ST_X				AS ST_X										
+			, BL.ST_Y				AS ST_Y
+			, ROUND(
+				(ST_DISTANCESPHERE(BA.GEOM, BL.GEOM)/1000)::NUMERIC, 2
+				) 					AS DISTANCE
+		FROM BUSAN_ATT_EUCKR 	BA
+			, BUSAN_LINE1 		BL
+		WHERE BA.GID = #{attid}::numeric	
+		ORDER BY DISTANCE
+		LIMIT 3
+	</select>
+	
+</mapper>
